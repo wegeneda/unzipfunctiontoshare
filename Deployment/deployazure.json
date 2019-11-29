@@ -16,7 +16,7 @@
                 "description": "Name of the branch to use when deploying (Default = master)."
             }
         },
-        "MonitorStorageName": {
+        "TargetStorageAccount": {
             "type": "string",
             "defaultValue": "transfer",
             "metadata": {
@@ -29,8 +29,8 @@
         "funcAppName": "[toLower(concat(parameters('baseName'), variables('suffix')))]",
         "funcStorageName": "[tolower(concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),16)), 'stg', variables('suffix')))]",
         "serverFarmName": "[concat(substring(parameters('baseName'), 0, min(length(parameters('baseName')),14)), '-srv-', variables('suffix'))]",
-        "repoURL": "https://github.com/FBoucher/AzUnzipEverything.git",
-        "fileStorageName": "[tolower(concat(substring(parameters('MonitorStorageName'), 0, min(length(parameters('MonitorStorageName')),16)), 'stg', variables('suffix')))]"
+        "repoURL": "https://github.com/wegeneda/unzipfunctiontoshare.git",
+        "fileStorageName": "[tolower(concat(substring(parameters('TargetStorageAccount'), 0, min(length(parameters('TargetStorageAccount')),16)), 'stg', variables('suffix')))]"
     },
     "resources": [
         {
@@ -146,7 +146,7 @@
                 {
                     "type": "blobServices/containers",
                     "apiVersion": "2018-07-01",
-                    "name": "[concat('default/', 'input-files')]",
+                    "name": "[concat('default/', 'upload')]",
                     "dependsOn": [
                         "[variables('fileStorageName')]"
                     ],
@@ -155,15 +155,12 @@
                     }
                 },
                 {
-                    "type": "blobServices/containers",
-                    "apiVersion": "2018-07-01",
-                    "name": "[concat('default/', 'output-files')]",
+                    "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+                    "apiVersion": "2019-04-01",
+                    "name": "[concat('/default/', 'output')]",
                     "dependsOn": [
                         "[variables('fileStorageName')]"
-                    ],
-                    "properties": {
-                        "publicAccess": "Blob"
-                    }
+                    ]
                 }
             ]
         }
