@@ -72,7 +72,7 @@
                             "value": "dotnet"
                         },
                         {
-                            "name": "cloud5mins_storage",
+                            "name": "funcstorage",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('fileStorageName'), ';AccountKey=', listKeys(variables('fileStorageName'),'2015-05-01-preview').key1)]"
                         },
                         {
@@ -81,7 +81,7 @@
                         },
                         {
                             "name": "destinationContainer",
-                            "value": "output-files"
+                            "value": "output"
                         }
                     ]
                 }
@@ -109,7 +109,7 @@
             "name": "[variables('funcStorageName')]",
             "location": "[resourceGroup().location]",
             "tags": {
-                "displayName": "funStorageName"
+                "displayName": "funcStorageName"
             },
             "sku": {
                 "name": "Standard_LRS"
