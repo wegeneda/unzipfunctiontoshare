@@ -14,7 +14,7 @@ namespace UnziptoAzureFiles
     public static class Unzipthis
     {
         [FunctionName("Unzipthis")]
-        public static async Task Run([BlobTrigger("input-files/{name}", Connection = "funcstorage")]CloudBlockBlob myBlob, string name, ILogger log)
+        public static async Task Run([BlobTrigger("upload/{name}", Connection = "funcstorage")]CloudBlockBlob myBlob, string name, ILogger log)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name}");
 
