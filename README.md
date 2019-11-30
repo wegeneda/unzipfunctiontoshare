@@ -1,4 +1,3 @@
 # unzipfunctiontoshare
 
-
-[![Deploy to Azure)(https://azuredeploy.net/deploybutton.png)](https://deploy.azure.com/?repository=https://github.com/wegeneda/unzipfunctiontoshare?ptmpl=/Deployment/deployAzure.parameters.json)
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/wegeneda/unzipfunctiontoshare/master/Deployment/deployazure.json" target="_blank"><img src="https://azuredeploy.net/deploybutton.png"/></a>
