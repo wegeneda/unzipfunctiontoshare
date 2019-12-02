@@ -30,6 +30,7 @@ namespace UnziptoAzureFiles
                     CloudStorageAccount storageAccount = CloudStorageAccount.Parse(destinationStorage);
                     CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
                     CloudFileShare fileShare = fileClient.GetShareReference(destinationContainer);
+                    CloudFileDirectory dir = fileShare.GetRootDirectoryReference();
 
                     using (MemoryStream fileMemStream = new MemoryStream())
                     {
@@ -45,7 +46,7 @@ namespace UnziptoAzureFiles
                                 //Replace all NO digits, letters, or "-" by a "-" Azure storage is specific on valid characters
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
-                                CloudFile file = fileShare.GetFileReference(valideName);
+                                CloudFile file = fileShare.GetFileReference(dir, valideName);
                                 using (var fileStream = entry.Open())
                                 {
                                     await file.UploadFromStreamAsync(fileStream);
