@@ -58,14 +58,15 @@ namespace UnziptoAzureFiles
                                 {
                                     await blockBlob.UploadFromStreamAsync(fileStream);
                                 }
+                                string blobSas = blockBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+                                {
+                                    Permissions = SharedAccessBlobPermissions.Read,
+                                    SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24)
+                                });
                             }
                         }
                     }
-                    string blobSas = blockBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
-                    {
-                        Permissions = SharedAccessBlobPermissions.Read,
-                        SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24)
-                    });
+                    
                 }
             }
             catch (Exception ex)
