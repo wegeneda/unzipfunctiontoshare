@@ -53,7 +53,6 @@ namespace UnziptoAzureFiles
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
                                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(valideName);
-                                CloudFile destFile = share.GetRootDirectoryReference().GetFileReference(valideName);
                                 using (var fileStream = entry.Open())
                                 {
                                     await blockBlob.UploadFromStreamAsync(fileStream);
