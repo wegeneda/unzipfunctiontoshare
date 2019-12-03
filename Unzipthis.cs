@@ -8,7 +8,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.File;
+using Microsoft.Azure;
+using Microsoft.Azure.Storage; 
+using Microsoft.Azure.Storage.Blob;
+using Microsoft.Azure.Storage.File;
 
 namespace UnziptoAzureFiles
 {
