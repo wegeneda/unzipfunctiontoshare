@@ -28,16 +28,15 @@ namespace UnziptoAzureFiles
                 {
 
                     CloudStorageAccount storageAccount = CloudStorageAccount.Parse(destinationStorage);
-                    CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
-                    CloudFileShare fileShare = fileClient.GetShareReference(destinationContainer);
-                    CloudFileDirectory dir = fileShare.GetRootDirectoryReference();
+                    CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+                    CloudBlobContainer container = blobClient.GetContainerReference(destinationContainer);
 
-                    using (MemoryStream fileMemStream = new MemoryStream())
+                    using (MemoryStream blobMemStream = new MemoryStream())
                     {
 
-                        await myBlob.DownloadToStreamAsync(fileMemStream);
+                        await myBlob.DownloadToStreamAsync(blobMemStream);
 
-                        using (ZipArchive archive = new ZipArchive(fileMemStream))
+                        using (ZipArchive archive = new ZipArchive(blobMemStream))
                         {
                             foreach (ZipArchiveEntry entry in archive.Entries)
                             {
@@ -46,10 +45,10 @@ namespace UnziptoAzureFiles
                                 //Replace all NO digits, letters, or "-" by a "-" Azure storage is specific on valid characters
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
-                                CloudFile file = fileShare.GetFileReference(dir, valideName);
+                                CloudBlockBlob blockBlob = container.GetBlockBlobReference(valideName);
                                 using (var fileStream = entry.Open())
                                 {
-                                    await file.UploadFromStreamAsync(fileStream);
+                                    await blockBlob.UploadFromStreamAsync(fileStream);
                                 }
                             }
                         }

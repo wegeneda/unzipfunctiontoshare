@@ -81,7 +81,7 @@
                         },
                         {
                             "name": "destinationContainer",
-                            "value": "output"
+                            "value": "transfer"
                         }
                     ]
                 }
@@ -147,6 +147,17 @@
                     "type": "blobServices/containers",
                     "apiVersion": "2018-07-01",
                     "name": "[concat('default/', 'upload')]",
+                    "dependsOn": [
+                        "[variables('fileStorageName')]"
+                    ],
+                    "properties": {
+                        "publicAccess": "Blob"
+                    }
+                },
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2018-07-01",
+                    "name": "[concat('default/', 'transfer')]",
                     "dependsOn": [
                         "[variables('fileStorageName')]"
                     ],
