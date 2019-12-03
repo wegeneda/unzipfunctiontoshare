@@ -6,10 +6,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure;
-using Microsoft.Azure.Storage; 
-using Microsoft.Azure.Storage.Blob;
-using Microsoft.Azure.Storage.File;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace UnziptoAzureFiles
 {
@@ -32,10 +30,7 @@ namespace UnziptoAzureFiles
                     CloudStorageAccount storageAccount = CloudStorageAccount.Parse(destinationStorage);
                     CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
                     CloudBlobContainer container = blobClient.GetContainerReference(destinationContainer);
-
-                    CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
-                    CloudFileShare share = fileClient.GetShareReference(destinationFileshare);
-                    
+                  
 
                     using (MemoryStream blobMemStream = new MemoryStream())
                     {
@@ -52,10 +47,9 @@ namespace UnziptoAzureFiles
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
                                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(valideName);
-                                CloudFile file = share.GetFileReference(valideName);
+
                                 using (var fileStream = entry.Open())
                                 {
-                                    await file.UploadFromStreamAsync(fileStream);
                                     await blockBlob.UploadFromStreamAsync(fileStream);
                                 }
                                
