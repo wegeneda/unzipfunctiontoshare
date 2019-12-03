@@ -21,6 +21,7 @@ namespace UnziptoAzureFiles
 
             string destinationStorage = Environment.GetEnvironmentVariable("destinationStorage");
             string destinationContainer = Environment.GetEnvironmentVariable("destinationContainer");
+            string destinationFileshare = Environment.GetEnvironmentVariable("destinationFileshare");
 
             try
             {
@@ -30,6 +31,12 @@ namespace UnziptoAzureFiles
                     CloudStorageAccount storageAccount = CloudStorageAccount.Parse(destinationStorage);
                     CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
                     CloudBlobContainer container = blobClient.GetContainerReference(destinationContainer);
+
+                    CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
+                    CloudFileShare share = fileClient.GetShareReference(destinationFileshare);
+
+
+                    
 
                     using (MemoryStream blobMemStream = new MemoryStream())
                     {
@@ -46,6 +53,7 @@ namespace UnziptoAzureFiles
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
                                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(valideName);
+                                CloudFile destFile = share.GetRootDirectoryReference().GetFileReference(valideName);
                                 using (var fileStream = entry.Open())
                                 {
                                     await blockBlob.UploadFromStreamAsync(fileStream);
@@ -53,6 +61,11 @@ namespace UnziptoAzureFiles
                             }
                         }
                     }
+                    string blobSas = blockBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+                    {
+                        Permissions = SharedAccessBlobPermissions.Read,
+                        SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24)
+                    });
                 }
             }
             catch (Exception ex)
