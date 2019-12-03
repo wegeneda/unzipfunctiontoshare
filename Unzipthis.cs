@@ -34,8 +34,6 @@ namespace UnziptoAzureFiles
 
                     CloudFileClient fileClient = storageAccount.CreateCloudFileClient();
                     CloudFileShare share = fileClient.GetShareReference(destinationFileshare);
-
-
                     
 
                     using (MemoryStream blobMemStream = new MemoryStream())
@@ -53,15 +51,13 @@ namespace UnziptoAzureFiles
                                 string valideName = Regex.Replace(entry.Name, @"[^a-zA-Z0-9\-]", "-").ToLower();
 
                                 CloudBlockBlob blockBlob = container.GetBlockBlobReference(valideName);
+                                CloudFile file = share.GetFileReference(valideName);
                                 using (var fileStream = entry.Open())
                                 {
+                                    await file.UploadFromStreamAsync(fileStream);
                                     await blockBlob.UploadFromStreamAsync(fileStream);
                                 }
-                                string blobSas = blockBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
-                                {
-                                    Permissions = SharedAccessBlobPermissions.Read,
-                                    SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24)
-                                });
+                               
                             }
                         }
                     }
